@@ -1,13 +1,12 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs/promises';
-import path from 'path';
+import { supabase } from '@/lib/supabase';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { firstName, lastName, email, phone, state } = body;
+    const { firstName, lastName, email, phone, state, additionalInfo } = body;
 
-    // Validate required fields (basic validation)
+    // Validate required fields
     if (!firstName || !phone) {
       return NextResponse.json(
         { error: 'First name and Contact No are required.' },
@@ -15,50 +14,28 @@ export async function POST(request: Request) {
       );
     }
 
-    // Prepare CSV data
-    const timestamp = new Date().toISOString();
-    // Escape commas and quotes for CSV
-    const escapeCsv = (str: string) => {
-      if (!str) return '';
-      const stringified = String(str);
-      if (stringified.includes(',') || stringified.includes('"') || stringified.includes('\n')) {
-        return `"${stringified.replace(/"/g, '""')}"`;
-      }
-      return stringified;
-    };
+    // Insert into Supabase
+    // We assume there is a table called "quotes"
+    const { data, error } = await supabase
+      .from('quotes')
+      .insert([
+        {
+          first_name: firstName,
+          last_name: lastName || null,
+          email: email || null,
+          phone: phone,
+          state: state || null,
+          additional_info: additionalInfo || null,
+        }
+      ]);
 
-    const row = [
-      timestamp,
-      escapeCsv(firstName),
-      escapeCsv(lastName),
-      escapeCsv(email),
-      escapeCsv(phone),
-      escapeCsv(state)
-    ].join(',') + '\n';
-
-    // File path to store the leads
-    const filePath = path.join(process.cwd(), 'leads.csv');
-
-    // Check if file exists to write headers if it doesn't
-    let fileExists = false;
-    try {
-      await fs.access(filePath);
-      fileExists = true;
-    } catch {
-      fileExists = false;
+    if (error) {
+      console.error('Supabase insert error:', error);
+      throw new Error(error.message);
     }
 
-    const headers = 'Timestamp,First Name,Last Name,Email,Contact No,State\n';
-    
-    // Append to file
-    if (!fileExists) {
-      await fs.writeFile(filePath, headers + row, 'utf8');
-    } else {
-      await fs.appendFile(filePath, row, 'utf8');
-    }
-
-    return NextResponse.json({ success: true, message: 'Quote request saved successfully.' });
-  } catch (error) {
+    return NextResponse.json({ success: true, message: 'Quote request saved to database successfully.' });
+  } catch (error: any) {
     console.error('Error saving quote:', error);
     return NextResponse.json(
       { error: 'Failed to process request.' },

@@ -41,6 +41,7 @@ export default function QuoteModal() {
       email: formData.get("email"),
       phone: formData.get("phone"),
       state: formData.get("state"),
+      additionalInfo: formData.get("additionalInfo"),
     };
 
     try {
@@ -113,6 +114,17 @@ export default function QuoteModal() {
                   <label htmlFor="state">Location (State) *</label>
                   <input type="text" id="state" name="state" required placeholder="Maharashtra" />
                 </div>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="additionalInfo">Additional Information</label>
+                <textarea 
+                  id="additionalInfo" 
+                  name="additionalInfo" 
+                  placeholder="Any extra details about your cargo..." 
+                  rows={3} 
+                  style={{ width: "100%", padding: "14px", borderRadius: "8px", border: "1px solid rgba(10, 15, 43, 0.2)", fontSize: "15px", fontFamily: "inherit", resize: "vertical", outline: "none" }}
+                ></textarea>
               </div>
 
               <button type="submit" className="btn btn-primary submit-btn" disabled={loading}>
