@@ -1,41 +1,46 @@
-import AnimatedTimeline from "./AnimatedTimeline";
-
 export default function Process() {
   const steps = [
     {
-      num: "BOOK",
+      num: "01 / BOOK",
       title: "Share Cargo Details",
       desc: "Tell us pickup location in Assam or Pune, weight, cargo type and timeline.",
-      imgSrc: "/how-it-works/step1.jpg"
     },
     {
-      num: "DISPATCH",
+      num: "02 / DISPATCH",
       title: "Dedicated Pickup",
       desc: "Our Guwahati or Pune hub team organizes prompt loading and dispatch.",
-      imgSrc: "/how-it-works/step2.jpg"
     },
     {
-      num: "DIRECT TRANSIT",
+      num: "03 / DIRECT TRANSIT",
       title: "Express Linehaul",
       desc: "Your shipment moves non-stop across the corridor with active milestone tracking.",
-      imgSrc: "/how-it-works/step3.jpg"
     },
     {
-      num: "DELIVER",
+      num: "04 / DELIVER",
       title: "Safe Handover",
       desc: "Direct doorstep delivery at your Pune or Assam destination without damage.",
-      imgSrc: "/how-it-works/step4.jpg"
     },
   ];
 
   return (
-    <section className="timeline-section" id="process" style={{ paddingTop: '80px', paddingBottom: '80px' }}>
+    <section className="process" id="process">
       <div className="container">
-        <div className="section-tag reveal">Direct & Streamlined</div>
-        <h2 className="section-title reveal" style={{ marginBottom: '60px' }}>
-          Four simple steps. <span style={{ color: "var(--cyan)" }}>Direct Assam ⇄ Pune Movement.</span>
+        <div className="section-tag reveal">Direct &amp; Streamlined</div>
+        <h2 className="section-title reveal">
+          Four simple steps. <span style={{ color: "#4FA0E8" }}>Direct Assam ⇄ Pune Movement.</span>
         </h2>
-        <AnimatedTimeline steps={steps} />
+        <p className="section-copy reveal">
+          No complex multi-handling. Direct linehaul from origin to destination across the Assam-Pune corridor.
+        </p>
+        <div className="process-grid">
+          {steps.map((step, index) => (
+            <div className="step reveal" key={index}>
+              <span className="step-num">{step.num}</span>
+              <h3>{step.title}</h3>
+              <p>{step.desc}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
